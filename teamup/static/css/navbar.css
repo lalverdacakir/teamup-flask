@@ -1,0 +1,28 @@
+
+.mynavbar{
+    background-color: #d16907;
+}
+.my-brand{
+    font-weight: bold;
+    
+}
+.nav-item:hover{
+  background-color: R;
+}
+
+.logo{
+  height: 4rem;
+}
+
+body{
+  font-size: 15px;
+}
+.nav-item{
+
+  padding-left: 0.5rem;
+  padding-right:0.5rem;
+  font-weight: 500;
+}
+.nav-item:hover{
+    background-color: #b15806 ;
+}

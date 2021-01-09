@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block head %} 
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}"> 
+{%  endblock %}
+
+{% block body %} 
+
+
+
+<h3 class="text-center my-card-title">Sign in to Team Up</h3>
+    <div class="container" style = "width:30rem;">
+        <div class="row">
+            <div class="col">
+        <div class="card p-5 m-3">
+        
+        <form class="ml-3" action="{{ url_for('users.login') }}" method="post">
+        
+            <div class="form-group row mb-3">
+            <label for="username" class="p-0 mb-1"style="font-weight:600" > Username </label>
+                <input id="username" name="username" type="text" placeholder="" class="form-control" formControlName="username"/> 
+
+            </div>
+        
+            <div class="form-group row mb-3">
+            <label for="password" class="mb-1 p-0" style="font-weight:600">Password</label>
+        
+            <input type="password" name="password" class="form-control" id="password"  formControlName="password">
+            
+            </div>
+            {% if msg == 'not verified' %}
+                <small class="text-danger">
+                    Username or password is incorrect
+                </small>      
+            {% endif %}
+
+            <div class="form-group row">
+            <button class="btn register-btn"  type="submit" style="font-size: 1.2rem; font-weight: 600;">Sign in</button>
+            </div>
+        </form>
+        </div>
+    </div>
+    
+
+        </div>
+<div class="row">
+    <div class="col">
+            <div class="card p-3 m-3">
+        <p class="card-title text-center">Dont't have an account?  <a href="{{url_for('users.register')}}"> Create an account.</a></p> 
+    </div>
+    </div>
+
+
+</div>
+    </div>
+
+{%  endblock %}

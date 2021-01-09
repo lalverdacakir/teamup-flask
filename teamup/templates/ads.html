@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+Hi {{usr.username}}
+<a href="{{ url_for('users.logout') }}" class="btn">Logout</a> 
+{% endblock %}
