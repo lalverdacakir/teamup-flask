@@ -5,4 +5,3 @@ class Config:
     MYSQL_USER = 'root'
     MYSQL_PASSWORD = 'admin'
     MYSQL_DB = 'team_up'
-    

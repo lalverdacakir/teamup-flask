@@ -1,7 +1,158 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {%block head%}
+<link rel="stylesheet" href="{{url_for('static', filename='css/cor.css') }}">
+<link rel="stylesheet" href="{{url_for('static', filename='css/login.css') }}">
+<link rel="stylesheet" href="{{url_for('static', filename='css/profile.css') }}"> {%endblock%} {% block body %} {% include 'includes/navbar.html' %}
 
-{% block body %}
+<div style="margin-top: 7rem;"></div>
+{% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category,message in messages %}
+<div class="alert alert-{{ category }} alert-dismissible fade show text-center " role="alert ">
+    <span>{{ message }}</span>
+    <button type="button " class="close " data-dismiss="alert " aria-label="Close ">
+                <span aria-hidden="true ">&times;</span>
+                </button>
+</div>
+{% endfor %} {% endif %} {% endwith %}
+<div class="container" style="background-color: white;">
+    <div class="row m-3">
+        <div class="col-md-12 text-center">
+            There is {{parameters.accepting}} teams and {{parameters.open_spots}} open spots open for application
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <form method="POST" action="{{url_for('teams.main')  }}" class="container align-left rounded p-3">
+                {{ form.hidden_tag() }}
+                <!-- Section: Sidebar -->
+                <section>
 
-Hi {{usr.username}}
-<a href="{{ url_for('users.logout') }}" class="btn">Logout</a> 
-{% endblock %}
+                    <!-- Section: Filters -->
+                    <section>
+
+                        <h5>Filters</h5>
+
+
+                        <!-- Section: Condition -->
+                        <section class="mb-4">
+
+                            <h6 class="font-weight-bold mb-3">Accepting</h6>
+
+                            <div class="form-check pl-0 mb-3">
+                                {{form.isAccepting}}
+                            </div>
+
+                        </section>
+
+
+
+
+
+                        <!-- Section: Size -->
+                        <section class="mb-4">
+
+                            <h6 class="font-weight-bold mb-3">Course:</h6>
+
+                            <div class="form-check pl-0 mb-3">
+                                {{form.course_code}}
+                            </div>
+
+                        </section>
+                        <!-- Section: Size -->
+                        <section class="mb-4 ">
+                            <h6 class="font-weight-bold mb-3">Team Name Search</h6>
+                            <label class="form-check-label small text-uppercase card-link-secondary"> {{form.name(class="form-control")}}</label>
+
+                        </section>
+
+                        <div class="pt-5 text-left ">{{ form.search(class="btn submit-btn ", style = "width: 100%;font-size: 1.2rem; font-weight: 400; ") }}</div>
+
+                    </section>
+                    <!-- Section: Filters -->
+
+                </section>
+                <!-- Section: Sidebar -->
+            </form>
+        </div>
+        <div class="col-md-9">
+            {% if parameters.teams%} {%for team in parameters.teams%}
+            <div class="row mb-4">
+                <div class="container rounded">
+                    <div class="row p-4 " style="vertical-align: middle;">
+                        <div class="col-md-5">
+                            <div class="row">
+                                <div class="d-flex flex-column align-items-center text-center">
+                                    <img class="img-fluid" src="{{url_for('static',filename = team.linkPhoto)}}">
+                                </div>
+                            </div>
+
+                            <div class="row rounded mt-2 border-k">
+                                <span class="label-detail sorround">Spots</span>
+                                <p class="sorround info">
+                                    {%if team.isAccepting %} {{team.openSpots}} {%else%}} Closed for application {%endif%}
+                                </p>
+
+                            </div>
+                        </div>
+                        <div class="col-md-7 ">
+                            <div class="mx-1 row rounded border-k">
+                                <span class="label-detail sorround">Team Name</span>
+                                <p class="sorround info">
+                                    {{team.teamName}}
+                                </p>
+
+                            </div>
+
+                            <div class="mx-1 row rounded mt-2 border-k">
+                                <span class="label-detail sorround">Ad Created</span>
+                                <p class="sorround info">
+                                    {{team.createDate}}
+                                </p>
+
+                            </div>
+                            <div class="mx-1 row rounded mt-2 border-k">
+                                <span class="label-detail sorround">Course Name:</span>
+                                <p class="sorround info">
+                                    {{team.courseName}}
+                                </p>
+
+                            </div>
+                            <div class=" mx-1 row rounded mt-2 border-k">
+                                <span class="label-detail sorround">Course Code:</span>
+                                <p class="sorround info">
+                                    {{team.courseCode}}
+                                </p>
+
+                            </div>
+                            <div class="mx-1 row rounded mt-2 border-k">
+                                <span class="label-detail sorround">Course CRN:</span>
+                                <p class="sorround info">
+                                    {{team.courseCRN}}
+                                </p>
+
+                            </div>
+                            <div class="row text-right mx-1">
+                                <div class="col-md-5">
+                                    <a class="btn btn_add mt-2 " href="{{url_for('teams.view_team',teamId = team.teamId)}}">See detail&nbsp; <i style="vertical-align: middle;font-size:2rem" class="fa fa-angle-right"></i>
+
+                                </div>
+                            <div class="col-md-3"></div>
+                               <div class="col-md-4">
+                                   <a href="{{url_for('teams.apply',teamId=team.teamId)}}" class="btn register-btn">
+                                    APPLY
+                                </a>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>{%endfor%} {%endif%}
+        </div>
+
+    </div>
+
+    {% endblock %}
