@@ -4,10 +4,10 @@ import re
 from teamup import db,csrf
 from teamup.models import User
 from .utils import hash,verify
-from .database import get_user,insert_user,get_user_detail,update_profile,get_user_interests,add_user_interest,delete_user_interest,get_like_count,check_like,remove_user_like,add_user_like
+from .database import get_user,insert_user,get_user_detail,update_profile,get_like_count,check_like,remove_user_like,add_user_like
 from teamup.teams.database import get_user_teams,get_admin_teams
-from teamup.database import get_courses,get_deps, get_facs, get_unis,get_interests,add_dep,add_uni,add_fac
-from .forms import LoginForm, RegisterForm, EditProfileForm, editInterestForm,dict_list_to_tuple_list
+from teamup.database import get_courses,get_deps, get_facs, get_unis,add_dep,add_uni,add_fac
+from .forms import LoginForm, RegisterForm, EditProfileForm,dict_list_to_tuple_list
 
 users = Blueprint('users',__name__)
 @users.route("/register",methods = ['GET','POST'])

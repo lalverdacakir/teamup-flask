@@ -16,7 +16,7 @@ def create_app(config_class = Config):
     app = Flask(__name__)
     app.config.from_object(Config)
     
-    db.connect(user=Config.MYSQL_USER,password = Config.MYSQL_PASSWORD,database=Config.MYSQL_DB)
+    db.connect(user=Config.MYSQL_USER,password = Config.MYSQL_PASSWORD,database=Config.MYSQL_DB,host = Config.MYSQL_HOST)
     login_manager.init_app(app)
     login_manager.login_view = "users.login"
     app.config.update(dict(

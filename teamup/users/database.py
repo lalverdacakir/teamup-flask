@@ -197,36 +197,6 @@ def delete_user_course(user,courseId):
     db.commit()
     cursor.close()
 
-def get_user_interests(user):
-    cursor = db.cursor(dictionary=True)
-    sql = '''SELECT interest.* FROM interest 
-            INNER JOIN interestlist on interestlist.interestId = interest.interestId
-            INNER JOIN user ON user.userId = interestlist.userId
-            WHERE user.userId = %s'''    
-    values = (user.id,)
-    cursor.execute(sql,values)
-    return cursor.fetchall()
-def add_user_interest(user,interestId):
-    print("add")
-    cursor= db.cursor(dictionary=True)
-    user_interests = get_user_interests(user)
-    for every in user_interests:
-        if(interestId==every['interestId']):
-            return
-    sql = 'INSERT INTO interestlist(interestId,userId) values(%s,%s)'
-    cursor.execute(sql,(interestId,user.id))
-    db.commit()
-    cursor.close()
-
-def delete_user_interest(user,interestId):
-    cursor = db.cursor(dictionary=True)
-    user_interests = get_user_interests(user)
-    for every in user_courses:
-        if(interestId == every['interestId']):
-            sql = 'DELETE FROM interestlist where interestId = %s and userId = %s'
-            cursor.execute(sql,(interestId,user.id))
-    db.commit()
-    cursor.close()
 
 
 def get_like_count(userId):
