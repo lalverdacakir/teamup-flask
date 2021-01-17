@@ -121,7 +121,10 @@
 
     </div>
 </form>
-
+<form method="container" method="POST" action="{{url_for('users.delete_account')}}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    <button onselect="" class="btn_deny  mt-2">Delete Account</button>
+</form>
 
 
 

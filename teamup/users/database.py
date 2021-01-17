@@ -127,6 +127,7 @@ def delet_profile(userId):
     cursor.execute(sql,(userId,))
     db.commit()
     cursor.close()
+    
 
 def get_likes(likedUser=None,user=None):
     cursor = db.cursor(dictionary=True)

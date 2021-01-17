@@ -158,6 +158,7 @@ def delete_account():
     try:
         delet_profile(current_user.id)
         flash('Deleted the account','success')
+        return redirect(url_for('users.edit_profile'))
     except:
         flash('Failed to delete account','danger')
     return redirect(url_for('main.home'))
