@@ -4,7 +4,7 @@ import re
 from teamup import db,csrf
 from teamup.models import User
 from .utils import hash,verify
-from .database import get_user,insert_user,get_user_detail,update_profile,get_like_count,check_like,remove_user_like,add_user_like
+from .database import get_user,insert_user,get_user_detail,update_profile,get_like_count,check_like,remove_user_like,add_user_like,delet_profile
 from teamup.teams.database import get_user_teams,get_admin_teams
 from teamup.database import get_courses,get_deps, get_facs, get_unis,add_dep,add_uni,add_fac
 from .forms import LoginForm, RegisterForm, EditProfileForm,dict_list_to_tuple_list
@@ -116,7 +116,7 @@ def view_profile(username):
 @users.route("/edit_profile", methods=['GET', 'POST'])
 @login_required
 def edit_profile():
-    
+
     account_detail = get_user_detail(userId=current_user.id)
     par = {
         "usr": current_user,
@@ -152,6 +152,15 @@ def edit_profile():
     
     return render_template('edit_profile.html',parameters = par,photo = photo_url,cv_url = cv_url,form = form)
 
+@users.route("/delete_account",methods= ['POST'])
+@login_required
+def delete_account():
+    try:
+        delet_profile(current_user.id)
+        flash('Deleted the account','success')
+    except:
+        flash('Failed to delete account','danger')
+    return redirect(url_for('main.home'))
 
 @users.route('/add_university',methods=['POST'])
 @login_required

@@ -119,6 +119,14 @@ def update_profile(user,form):
     db.commit()
     cursor.close()
     
+def delet_profile(userId):
+    cursor = db.cursor(dictionary=True)
+    sql = 'DELETE FROM userdetail where userId = %s'
+    cursor.execute(sql,(userId,))
+    sql = 'DELETE FROM user where userId = %s'
+    cursor.execute(sql,(userId,))
+    db.commit()
+    cursor.close()
 
 def get_likes(likedUser=None,user=None):
     cursor = db.cursor(dictionary=True)
@@ -159,43 +167,7 @@ def remove_like(likedUser,user):
         db.commit()
     cursor.close()
     
-def get_user_courses(user):
-    cursor = db.cursor(dictionary=True)
-    sql = '''SELECT course.* FROM course 
-            INNER JOIN courselist on courselist.courseId = course.courseId
-            INNER JOIN user ON user.userId = courselist.userId
-            WHERE user.userId = %s'''
-    values = (user.id,)
-    cursor.execute(sql,values)
-    return cursor.fetchall()
-def add_user_courses(user,courseId):
-    cursor= db.cursor(dictionary=True)
-    user_courses = get_user_courses(user)
-    for every in user_courses:
-        if(courseId==every['courseId']):
-            return
-    sql = 'INSERT INTO courselist(courseId,userId,isUpToDate) values(%s,%s,true)'
-    cursor.execute(sql,(courseId,user.id))
-    db.commit()
-    cursor.close()
-def change_user_course_stat(user,courseId):
-    cursor = db.cursor(dictionary=True)
-    user_courses = get_user_courses(user)
-    for every in user_courses:
-        if(courseId == every['courseId']):
-            sql = 'UPDATE courselist set isUpToDate = false where courseId = %s and userId = %s'
-            cursor.execute(sql,(courseId,user.id))
-    db.commit()
-    cursor.close()
-def delete_user_course(user,courseId):
-    cursor = db.cursor(dictionary=True)
-    user_courses = get_user_courses(user)
-    for every in user_courses:
-        if(courseId == every['courseId']):
-            sql = 'DELETE FROM courselist where courseId = %s and userId = %s'
-            cursor.execute(sql,(courseId,user.id))
-    db.commit()
-    cursor.close()
+
 
 
 

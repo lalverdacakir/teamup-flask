@@ -263,7 +263,7 @@ def delete_application(appId):
             delete_user_app(appId)
             flash('Deleted the application','success')
         except:
-            falsh('Failed to delete the application','danger')
+            flash('Failed to delete the application','danger')
         
     else:
         flash('Application doesn\'t exists.')
