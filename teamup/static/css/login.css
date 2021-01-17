@@ -1,9 +1,54 @@
-.register-btn{
-    background-color: #F69D49; 
-    float: right;
-    margin-top: 1rem;
-
+.login-main {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100vh
 }
-.my-card-title{
+
+.login-form {
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    padding-top: 70px;
+    padding-bottom: 70px;
+    padding-right: 30px;
+    padding-left: 30px;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: 0 15px 20px rgba(0, 0, 0, 0.2);
+    border-radius: 5px
+}
+
+.register-btn {
+    background-color: #F69D49;
+    margin-top: 1rem;
+}
+
+.my-card-title {
     color: #F69D49;
+    background-color: white;
+    font-weight: 300;
+}
+
+form .btn {
+    width: 100%;
+}
+
+.btn:hover {
+    transition: .3s;
+    background-color: #fa881d;
+}
+
+form .btn_add {
+    width: initial;
+}
+
+.btn_add:hover {
+    transition: .3s;
+    background-color: #d6cfcf;
+}
+
+form .submit-btn {
+    width: initial;
+    background-color: #F69D49;
 }

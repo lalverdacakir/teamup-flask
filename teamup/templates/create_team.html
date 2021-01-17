@@ -1,0 +1,93 @@
+{% extends 'base.html' %} {%block head%}
+<link rel="stylesheet" href="{{url_for('static', filename='css/profile.css') }}">
+<link rel="stylesheet" href="{{url_for('static', filename='css/login.css') }}"> {%endblock%} {% block body %} {% include 'includes/navbar.html' %}
+<div style="margin-top: 7rem;"></div>
+{% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category,message in messages %}
+<div class="alert alert-{{ category }} alert-dismissible fade show text-center " role="alert ">
+    <span>{{ message }}</span>
+    <button type="button " class="close " data-dismiss="alert " aria-label="Close ">
+                <span aria-hidden="true ">&times;</span>
+                </button>
+</div>
+{% endfor %} {% endif %} {% endwith %}
+<form method="POST" action="{{ parameters.action }}" class="container rounded mt-5 mb-5" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    <div class="row">
+
+
+        <div class="col-md-12 ">
+            <div class="p-3">
+                <div class="d-flex justify-content-between align-items-center mb-3" ">
+                    <h4 class="text-right " style="font-weight: 500; color:#F69D49; ">CREATE TEAM</h4>
+
+                </div>
+                <div class="row ">
+
+                    <div class="col-md-6 ">
+                        <div class="row ">
+                            {{form.course.label(class = "labels label ")}} {{form.course(class="form-control ")}}
+                        </div>
+
+
+                    </div>
+                    
+                    <div class="col-md-6 ">
+                        <a class="border btn btn_add text-sm-left " style="font-size:0.8rem " data-toggle="modal " data-target="#uni "></i> Add Course&nbsp &nbsp<i class="fa fa-plus " style="color:#a23cdd "></i></a>
+                        <br><span style="font-size:0.7rem " class="text-small "><i class="fa fa-star " style="color:#a23cdd "></i>After edition you need to wait a few seconds in order to see newly added university and refresh</span>
+
+                    </div>
+
+
+                    <div class="col-md-6 ">
+                        <div class="row mt-2 ">
+                            
+                                <img style="width: 13rem;border-radius: 50%; " class=" mt-4 mb-3 " src="{{url_for( 'static',filename=parameters.photo)}} ">
+                    
+                                <div class="form-group m-2 " style="vertical-align: middle; ">
+                                    {{ form.linkPhoto.label() }} {{ form.linkPhoto(class="form-control-file ") }} {% if form.linkPhoto.errors %} {% for error in form.linkPhoto.errors %}
+                                    <span class="text-danger ">{{ error }}</span> {% endfor %} {% endif %}
+                                </div>
+                           
+                        </div>
+                        <div class="row mt-2 ">
+                            {{form.teamName.label(class = "labels label ")}} {{form.teamName(class="form-control ")}}</div>
+                        <div class="row mt-2 ">
+
+                            {{form.openSpots.label(class = "labels label ")}} {{form.openSpots(class="form-control ")}}
+                            <span style="color: #f00 "> {% if form.openSpots.errors %} {% for error in form.openSpots.errors %}
+                                <span class="text-danger ">{{ error }}</span> {% endfor %}{% endif %}</span>
+
+                        </div>
+                        <div class="row mt-3 ">
+
+
+                            <div class="form-group ">
+                                {{form.isAccepting.label(class="labels label ")}}
+                                <p>
+                                    Are you going to start accepting applications immidiatly? <br> If yes click here &nbsp; {{form.isAccepting(class="accept ")}}
+                                </p>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 ">
+                        {{form.description.label(class = "labels label ")}} {{form.description(class="form-control ",style="height:300px ")}}
+                    </div>
+
+                </div>
+
+                <div class="pt-5 text-right ">{{ form.submit(class="btn submit-btn ", style = "font-size: 1.2rem; font-weight: 400; ") }}</div>
+            </div>
+
+
+
+
+
+
+        </div>
+    </div>
+
+</form>
+
+{%endblock%}

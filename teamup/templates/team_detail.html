@@ -1,0 +1,212 @@
+{% extends 'base.html' %} {%block head%}
+<link rel="stylesheet" href="{{url_for('static', filename='css/profile.css') }}">
+<link rel="stylesheet" href="{{url_for('static', filename='css/login.css') }}"> {%endblock%} {% block body %} {% include 'includes/navbar.html' %}
+<div style="margin-top: 7rem;"></div>
+
+
+{% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category,message in messages %}
+<div class="alert alert-{{ category }} alert-dismissible fade show text-center " role="alert ">
+    <span>{{ message }}</span>
+    <button type="button " class="close " data-dismiss="alert " aria-label="Close ">
+                <span aria-hidden="true ">&times;</span>
+                </button>
+</div>
+{% endfor %} {% endif %} {% endwith %}
+<div class="container rounded mt-5 mb-5">
+
+    <div class="row">
+
+
+        <div class="col-md-12 ">
+            <div class="p-3">
+
+                <div class="row d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="text-right" style="font-weight: 500;">TEAM DETAIL</h4>
+                    {%if parameters.team.isAccepting and parameters.team.adminUserId!=parameters.usr.id%}
+                    <a href="{{url_for('teams.apply',teamId=parameters.team.teamId)}}" class="btn register-btn">
+                        <h5>Apply or Edit Application</h5>
+                    </a> {%endif%}
+                </div>
+                <div class="row">
+
+
+                    <div class="col-md-6 p-3">
+                        <div class="row  align-items-center text-center">
+                            <img style="width: inherit;" class="img-fluid mt-4 mb-3" src="{{url_for('static',filename = parameters.team.linkPhoto)}}">
+                        </div>
+                        <div class="row mr-2 rounded border-k">
+                            <p class="label-detail sorround">Course </p>
+
+                            <p class="sorround info">
+                                {{parameters.team.courseName}} - {{parameters.team.courseCode}} - {{parameters.team.courseCRN}}
+                            </p>
+                        </div>
+                        <div class="row mr-2 rounded mt-2 border-k">
+                            <p class="label-detail sorround">Team Name</p>
+                            <p class="sorround info">
+                                {{parameters.team.teamName}}
+                            </p>
+                        </div>
+                        <div class="row mr-2 rounded mt-2 border-k">
+
+                            <p class="label-detail sorround">Open Spots</p>
+                            <p class="sorround info">
+                                {{parameters.team.openSpots}}
+                            </p>
+
+                        </div>
+
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row rounded border-k label-detail sorround mb-1 mt-2 justify-content-center">
+                            <span>
+                                Description
+                            </span>
+
+                        </div>
+                        <div class="row rounded border-k">
+                            <p class="sorround info">
+                                {{parameters.team.description}}
+                            </p>
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+
+    </div>
+</div>
+
+</div>
+
+{%if parameters.admin or parameters.members%}
+<div class="container rounded p-3">
+    <h5>Members:</h5>
+    {%if parameters.admin %}
+
+    <a class="btn btn_add mt-4" href="{{url_for('users.view_profile',username=parameters.admin.username)}}">
+
+        <img class="thumb" src="{{url_for('static',filename=parameters.admin.linkPhoto)}}" style="width:5rem" alt="">
+        <p>Team Owner <br> {{parameters.admin.fullName}}</p>
+    </a> {%endif%} {%if parameters.members %} {%for member in parameters.members%}
+    <a class="btn btn_add" href="{{url_for('users.view_profile',username=member.username)}}">
+        <img class="thumb" src="{{url_for('static',filename=member.linkPhoto)}}" style="width:5rem" alt="">
+        <p>{{member.fullName}}</p>
+    </a>
+    {%endfor%} {%endif%}
+</div>
+{%endif%} {%if parameters.applications and parameters.admin.userId == parameters.usr.id%}
+<div class="container rounded p-3 mt-5">
+    <h5>Applications:</h5>
+
+    {%for appl in parameters.applications%}
+    <div class="row p-1">
+        <div class="col-md-2">
+            <a class="btn btn_add" href="{{url_for('users.view_profile',username=appl.username)}}">
+                <img class="thumb" src="{{url_for('static',filename=appl.linkPhoto)}}" style="width:5rem" alt="">
+                <p>{{appl.fullName}}</p>
+            </a>
+            {%if appl.status == 'Denied'%}
+
+            <button class="status_denied">
+                {{appl.status}}
+            </button> {%endif%} {%if appl.status == 'Accepted'%}
+
+            <button class="status_accepted">
+                {{appl.status}}
+            </button> {%endif%}
+        </div>
+
+        <div class="col-md-8">
+            <div class="row rounded mt-2 border-k">
+                <p class="label-detail sorround">Application Date</p>
+                <p class="sorround info">
+                    {{appl.applyDate}}
+                </p>
+
+            </div>
+
+            <div class="row rounded mt-2 border-k">
+                <p class="label-detail sorround">Modified Application Date</p>
+                <p class="sorround info">
+                    {{appl.modified}}
+                </p>
+
+            </div>
+
+            <div class="row rounded mt-2 border-k">
+                <span class="label-detail sorround">Status</span>
+                <p class="sorround info">
+                    {{appl.status}}
+                </p>
+
+            </div>
+            <div class="row rounded mt-2 border-k ">
+                <p class="sorround info pl-0 py-0">
+                    <span class="label-detail sorround float-left mr-1 mb-1" style="display: inline-block;border-bottom: 1px solid #6a41c9;">Content</span>
+                    <span class="">{{appl.content}}</span>
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-2">
+            <a class="btn btn_add mt-2 " href="{{url_for('users.view_profile',username = appl.username)}}">View Profile&nbsp; <i style="vertical-align: middle;font-size:2rem" class="fa fa-angle-right"></i>
+
+            </a>{%if appl.status == 'In Process'%}
+
+            <form method="POST" action="{{url_for('teams.accept_application',appId=appl.applicationId)}}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <button onselect="" class="btn_accept  mt-2">Accept</button>
+            </form>
+            <form method="POST" action="{{url_for('teams.deny_application',appId=appl.applicationId)}}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <button class="btn_deny mt-2">Deny</button>
+            </form>
+            {%endif%}
+        </div>
+
+
+    </div>
+
+    {%endfor%}{%endif%}
+</div>
+{%if parameters.team.adminUserId == parameters.usr.id%}
+<div class="container rounded p-3 mt-5">
+    <div class="row">
+
+        <div class="col-md-6">
+            <form method="POST" action="{{url_for('teams.update_team',teamId=parameters.team.teamId)}}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <button onselect="" class="btn_accept  mt-2">Update Team Information</button>
+            </form>
+
+
+        </div>
+        <div class="col-md-6">
+            <form method="POST" action="{{url_for('teams.delete_team',teamId=parameters.team.teamId)}}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <button onselect="" class="btn_deny  mt-2">Delete Team</button>
+            </form>
+
+
+        </div>
+    </div>
+</div>
+{%endif%} {%endblock%}

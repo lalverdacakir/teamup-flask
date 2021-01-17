@@ -1,6 +1,227 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %}{%block head%}
+<link rel="stylesheet" href="{{url_for('static', filename='css/profile.css') }}">
+<link rel="stylesheet" href="{{url_for('static', filename='css/login.css') }}"> {%endblock%} {% block body %} {% include 'includes/navbar.html' %}
+<div style="margin-top: 7rem;"></div>
+{% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category,message in messages %}
+<div class="alert alert-{{ category }} alert-dismissible fade show text-center " role="alert ">
+    <span>{{ message }}</span>
+    <button type="button " class="close " data-dismiss="alert " aria-label="Close ">
+                <span aria-hidden="true ">&times;</span>
+                </button>
+</div>
+{% endfor %} {% endif %} {% endwith %}
+<form method="POST" action="{{ url_for('users.edit_profile') }}" class="container rounded mt-5 mb-5" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    <div class="row">
+        <div class="col-md-4">
+            <div class="d-flex flex-column align-items-center text-center p-3">
+                <img style="width: 13rem;border-radius: 50%;" class=" mt-4 mb-3" src="{{photo}}">
 
-{%block body%}
-{{usr.userId}}
-{{usr.userDetailId}}
+                <div class="form-group">
+                    {{ form.linkPhoto.label() }} {{ form.linkPhoto(class="form-control-file") }} {% if form.linkPhoto.errors %} {% for error in form.linkPhoto.errors %}
+                    <span class="text-danger">{{ error }}</span> {% endfor %} {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8 ">
+            <div class="p-3">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="text-right" style="font-weight:500">PROFILE SETTINGS</h4>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        {{form.university.label(class = "labels",style = "font-weight:600")}} {{form.university(class="form-control")}}
+
+                    </div>
+                    <div class="col-md-12 mt-3">
+                        <a class="border btn btn_add text-sm-left " style="font-size:0.8rem" data-toggle="modal" data-target="#uni"></i> Add University&nbsp &nbsp<i class="fa fa-plus" style="color:#a23cdd;"></i></a>
+                        <br><span style="font-size:0.7rem" class="text-small"><i class="fa fa-star" style="color:#a23cdd;"></i>After edition you need to wait a few seconds in order to see newly added university and refresh</span>
+
+                    </div>
+
+
+                    <div class="col-md-12">
+                        {{form.faculty.label(class = "labels",style = "font-weight:600")}} {{form.faculty(class="form-control")}}
+                    </div>
+                    <div class="col-md-12 mt-3">
+                        <a class="border btn btn_add text-sm-left" data-toggle="modal" data-target="#fac" style="font-size:0.8rem">Add Faculty&nbsp &nbsp <i class="fa fa-plus" style="color:#a23cdd;"></i></a>
+                        <br><span style="font-size:0.7rem" class="text-small"><i class="fa fa-star" style="color:#a23cdd;"></i>After edition you need to wait a few seconds in order to see newly added faculty and refresh</span>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="p-3">
+                <div class="row mt-2">
+
+                    <div class="col-md-12">
+
+                        {{ form.fullName.label(class="labels",style="font-weight:600" )}} {{ form.fullName(class="form-control") }}
+                    </div>
+                </div>
+                <div class="row mt-2">
+
+                    <div class="col-md-12">
+                        {{form.bio.label(class = "labels",style = "font-weight:600")}} {{form.bio(class="form-control")}}
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            {{ form.linkCV.label(class="labels",style = "font-weight:600") }}<br> <a style="font-size: 1rem;" href="{{cv_url}}" target="_blank">{{parameters.usr.username}}.pdf</a>{{ form.linkCV(class="form-control-file mt-2") }} {% if
+                            form.linkCV.errors %} {% for error in form.linkCV.errors %}
+                            <span class="text-danger">{{ error }}</span> {% endfor %} {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            {{form.linkGithub.label(class="labels",style = "font-weight:600")}} {{form.linkGithub(class="form-control")}}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-8">
+            <div class="p-3 mt-0">
+                <div class="row">
+
+
+                    <div class="col-md-12">
+                        {{form.department.label(class = "labels",style = "font-weight:600")}} {{form.department(class="form-control")}}
+                    </div>
+                    <div class="col-md-12 mt-3">
+                        <a class="btn btn_add border text-sm-left " data-toggle="modal" data-target="#dep" style="font-size:0.8rem">Add Department &nbsp &nbsp <i class="fa fa-plus" style="color:#a23cdd;"></i></a>
+                        <br><span style="font-size:0.7rem" class="text-small"><i class="fa fa-star" style="color:#a23cdd;"></i>After edition you need to wait a few seconds in order to see newly added department and refresh</span>
+                    </div>
+
+
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-6">
+                        {{form.yearOfStudy.label(class="labels",style = "font-weight:600")}} {{form.yearOfStudy(class="form-control")}}
+                    </div>
+                    <div class="col-md-6">
+                        {{form.gpa.label(class="labels",style = "font-weight:600")}} {{form.gpa(class="form-control")}}
+                    </div>
+
+                </div>
+
+
+
+                <div class="mt-5 pt-5 text-right">{{ form.submit(class="btn register-btn", style = "font-size: 1.2rem; font-weight: 600; width: 20%") }}</div>
+            </div>
+        </div>
+
+    </div>
+</form>
+
+
+
+
+
+
+<div id="uni" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-xs-center">Add University</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" method="POST" action="{{url_for('users.add_university')}}">
+                    {{ form.hidden_tag() }}
+                    <input type="hidden" name="_token" value="">
+                    <div class="form-group">
+                        <label class="control-label">University Name</label>
+                        <div>
+                            <input type="text" class="form-control input-lg" name="universityName" value="">
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div>
+                            <button type="submit" class="register-btn btn btn-block">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<div id="fac" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-xs-center">Add Faculty</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" method="POST" action="{{url_for('users.add_faculty')}}">
+                    {{ form.hidden_tag() }}
+                    <input type="hidden" name="_token" value="">
+                    <div class="form-group">
+                        <label class="control-label">Faculty Name</label>
+                        <div>
+                            <input type="text" class="form-control input-lg" name="facultyName" value="">
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div>
+                            <button type="submit" class="register-btn btn btn-block">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<div id="dep" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-xs-center">Add Department</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" method="POST" action="{{url_for('users.add_department')}}">
+                    {{ form.hidden_tag() }}
+                    <input type="hidden" name="_token" value="">
+
+                    <div class="form-group">
+                        <label class="control-label">Department Name</label>
+                        <div>
+                            <input type="text" class="form-control input-lg" name="departmentName" value="">
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div>
+                            <button type="submit" class="register-btn btn btn-block">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
 {%endblock%}

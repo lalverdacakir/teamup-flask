@@ -1,0 +1,162 @@
+.form-control:focus {
+    box-shadow: none;
+    border-color: #fa881d
+}
+
+.profile-button {
+    background: rgb(99, 39, 120);
+    box-shadow: none;
+    border: none
+}
+
+.profile-button:hover {
+    background: #682773
+}
+
+.profile-button:focus {
+    background: #682773;
+    box-shadow: none
+}
+
+.profile-button:active {
+    background: #682773;
+    box-shadow: none
+}
+
+.back:hover {
+    color: #682773;
+    cursor: pointer
+}
+
+.labels {
+    font-size: 1rem
+}
+
+.add-experience:hover {
+    background: #BA68C8;
+    color: #fff;
+    cursor: pointer;
+    border: solid 1px #BA68C8
+}
+
+.container {
+    background-color: whitesmoke;
+}
+
+.accept {
+    width: 0.8rem;
+    height: 0.8rem;
+}
+
+.sorround {
+    padding: .5rem .5rem;
+    border-radius: 10%;
+}
+
+.info {}
+
+.label-detail {
+    font-size: 1rem;
+    font-weight: 600;
+    border-right: 1px solid #415ac9;
+    background-color: #d8b0f0;
+    border-radius: 0%;
+}
+
+.row p {
+    margin-bottom: 0px;
+}
+
+.border-k {
+    border: 1px solid #6a41c9;
+}
+
+.thumb {
+    border-radius: 50%;
+    margin-right: .5rem;
+}
+
+.btn_accept {
+    color: white;
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+    width: 100%;
+    background-color: green;
+}
+
+.btn_accept:hover {
+    text-decoration: none;
+    color: white;
+    transition: .3s;
+    background-color: rgb(2, 87, 2);
+}
+
+.btn_deny {
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+    width: 100%;
+    color: white;
+    background-color: rgb(192, 0, 0);
+}
+
+.btn_deny:hover {
+    text-decoration: none;
+    color: white;
+    transition: .3s;
+    background-color: rgb(131, 2, 2);
+}
+
+.status_denied {
+    color: rgb(231, 54, 54);
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+    width: 100%;
+    background-color: rgb(240, 218, 218);
+}
+
+.status_denied:hover,
+.status_accepted:hover {
+    cursor: auto;
+}
+
+.status_accepted {
+    color: rgb(7, 143, 25);
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+    width: 100%;
+    background-color: rgb(196, 247, 203);
+}
+
+#isAccepting,
+#course_code {
+    list-style-type: none;
+    padding-left: 1rem;
+}

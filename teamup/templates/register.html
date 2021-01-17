@@ -1,84 +1,92 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}"> {% endblock %} {% block body %} {% for field in form.errors %} {% for error in form.errors[field] %}
+<div class="error">{{ error }}</div>
+{% endfor %} {% endfor %}
 
-{% block head %} 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}"> 
-{%  endblock %}
+<main class="login-main" data-vide-bg="{{ url_for('static', filename='img/login-bg.mp4') }}">
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category,message in messages %}
+    <div class="alert alert-{{ category }} alert-dismissible fade show text-center " role="alert ">
+        <span>{{ message }}</span>
+        <button type="button " class="close " data-dismiss="alert " aria-label="Close ">
+                    <span aria-hidden="true ">&times;</span>
+                    </button>
+    </div>
+    {% endfor %} {% endif %} {% endwith %}
+    <form class="login-form" action="{{ url_for('users.register') }}" method="post">
+        {{ form.hidden_tag() }}
+        <div class="rounded py-2 mx-4 my-card-title">
+            <h3 class="text-center my-card-title">Create an account</h3>
+        </div>
+        <div class="container" style="width:30rem;">
+            <div class="row">
+                <div class="col">
+                    <div class="card p-5 m-3">
 
 
-{% block body %} 
+                        <div class="form-group row mb-3">
+                            {{ form.email.label(class="p-0 mb-1 label" )}} {% if form.email.errors %} {{ form.email(class="form-control is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.email.errors %}
+                                <span>{{ error }}</span> {% endfor %}
+                            </div>
+                            {% else %} {{ form.email(class="form-control") }} {% endif %} {% if parameters.msg == 'email exists' %}
+                            <small style="color: #F69D49;">
+                            ***There is already an account registered to this email address
+                        </small> {% endif %}
+
+                        </div>
+                        <div class="form-group row mb-3">
+                            {{ form.username.label(class="p-0 mb-1 label") }} {% if form.username.errors %} {{ form.username(class="form-control is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.username.errors %}
+                                <span>{{ error }}</span> {% endfor %}
+                            </div>
+                            {% else %} {{ form.username(class="form-control") }} {% endif %}{% if parameters.msg == 'user exists' %}
+                            <small style="color: #F69D49;">
+                          ***There is already an account registered to this username
+                      </small> {% endif %}
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            {{ form.password.label(class="p-0 mb-1 label") }} {% if form.password.errors %} {{ form.password(class="form-control is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.password.errors %}
+                                <span>{{ error }}</span> {% endfor %}
+                            </div>
+                            {% else %} {{ form.password(class="form-control") }} {% endif %}
+                        </div>
+                        <div class="form-group row mb-3">
+                            {{ form.confirm_password.label(class="p-0 mb-1 label") }} {% if form.confirm_password.errors %} {{ form.confirm_password(class="form-control is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.confirm_password.errors %}
+                                <span>{{ error }}</span> {% endfor %}
+                            </div>
+                            {% else %} {{ form.confirm_password(class="form-control") }} {% endif %} {% if parameters.msg == 'underfilled the form' %}
+                            <small style="color: #F69D49;">
+                        ***Form is underfilled
+                    </small> {% endif %}
+                        </div>
+
+                        <div class="form-group row">
+                            {{ form.submit(class="btn register-btn",style="font-size: 1.2rem; font-weight: 400;") }}
 
 
-<h3 class="text-center my-card-title">Sign up to join</h3>
-<div class="container" style = "width:30rem;">
+                        </div>
+
+    </form>
+    </div>
+
+    </div>
+    </div>
     <div class="row">
         <div class="col">
-            <div class="card p-5 m-3" >
-              
-              <form class="ml-3"  action="{{ url_for('users.register') }}" method="post">
-            
-                <div class="form-group row mb-3">
-                    
-                  <label for="email" class="p-0 mb-1"style="font-weight:600" >Email</label>
-                  
-                    <input type="email" class="form-control" name = "email" id="email"placeholder="example@mailserver.com" formControlName="email">  
-                        {% if msg == 'email exists' %}
-                        <small class="text-danger">
-                            There is already an account registered to this email address
-                        </small>      
-                        {% endif %}
-                </div>
-                <div class="form-group row mb-3">
-                    <label for="username" class="p-0 mb-1"style="font-weight:600" >Username</label>
-                    
-                      <input type="username" class="form-control" name = "username" id="username" formControlName="username">  
-                      {% if msg == 'user exists' %}
-                      <small class="text-danger">
-                          There is already an username registered to this email address
-                      </small>      
-               {% endif %}
-                  </div>
-              
-                <div class="form-group row mb-3">
-                  <label for="password" class="p-0 mb-1"style="font-weight:600" >Password</label>
-                 
-                    <input type="password" class="form-control" name = "password" id="password"  formControlName="password"> 
-                    {% if msg == 'short password' %}
-                    <small class="text-danger">
-                        Password is too short
-                    </small>      
-             {% endif %}
-                </div>
-                <div class="form-group row mb-3">
-                  <label for="confirm_password" class="p-0 mb-1"style="font-weight:600" >
-                    Confirm Password
-                  </label>
-                  
-                  <input type="password" name = "confirm_password" class="form-control" id="confirm_password" formControlName="confirm_password">
-                    {% if msg == 'underfilled the form' %}
-                    <small class="text-danger">
-                        Fill the form correctly
-                    </small>      
-            {% endif %}
-                </div>
-               
-              <div class="form-group row">
-                <button class="btn register-btn" type="submit" style="font-size: 1.2rem; font-weight: 600;">Sign up</button>
-                            
-              </div>
-                
-              </form>
-</div>
+            <div class="card p-3 m-3">
+                <p class="card-title text-center">Already have an account? <a href="{{url_for('users.login')}}"> Sign in.</a></p>
+            </div>
+        </div>
 
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">
-                    <div class="card p-3 m-3">
-                      <p class="card-title text-center">Already have an account?  <a  href="{{url_for('users.login')}}"> Sign in.</a></p> 
-                    </div>
-            </div>
-    
-          </div>
-          
-</div>
-{%  endblock %}
+    </div>
+
+    </div>
+</main>
+{% endblock %}
