@@ -5,8 +5,8 @@ from teamup import db,csrf
 from teamup.models import User
 from .utils import hash,verify
 from .database import get_user,insert_user,get_user_detail,update_profile,get_like_count,check_like,remove_user_like,add_user_like,delet_profile
-from teamup.teams.database import get_user_teams,get_admin_teams
-from teamup.database import get_courses,get_deps, get_facs, get_unis,add_dep,add_uni,add_fac
+from teamup.teams.database import get_user_teams,get_admin_teams,set_is_accepting
+from teamup.database import get_courses,get_deps, get_facs, get_unis,add_dep,add_uni,add_fac,add_course
 from .forms import LoginForm, RegisterForm, EditProfileForm,dict_list_to_tuple_list
 
 users = Blueprint('users',__name__)
@@ -60,7 +60,7 @@ def login():
             account = User(account[0])
             if(verify(account.password,form.password.data)):
                 
-                login_user(account,remember = True)
+                login_user(account,remember = form.remember.data)
                 
                 next_page = request.args.get('next')
                 
@@ -87,6 +87,7 @@ def logout():
     return redirect(url_for('main.home'))
   
 @users.route("/profile/<string:username>")
+@login_required
 def view_profile(username):
     
     account = get_user(username = username)
@@ -123,6 +124,10 @@ def edit_profile():
         "detail": account_detail
     }
     form = EditProfileForm()
+    form.university.choices = dict_list_to_tuple_list(get_unis())
+    form.department.choices = dict_list_to_tuple_list(get_deps())
+    form.faculty.choices = dict_list_to_tuple_list(get_facs())
+    
     if form.validate_on_submit():
         try:
             update_profile(user=current_user.id,form = form)
@@ -155,13 +160,20 @@ def edit_profile():
 @users.route("/delete_account",methods= ['POST'])
 @login_required
 def delete_account():
+    to_be_deleted = current_user.id
+    teams = get_admin_teams(to_be_deleted)
+    for each in teams:
+        set_is_accepting(each['teamId'],False)
+    logout_user()
+    
+    
     try:
-        delet_profile(current_user.id)
+        delet_profile(to_be_deleted)
         flash('Deleted the account','success')
         return redirect(url_for('users.edit_profile'))
     except:
-        flash('Failed to delete account','danger')
-    return redirect(url_for('main.home'))
+        flash('Failed to delete account. Login and try again.','danger')
+        return redirect(url_for('users.login'))
 
 @users.route('/add_university',methods=['POST'])
 @login_required
@@ -171,7 +183,7 @@ def add_university():
     if(uniName):
         try:
             add_uni(uniName)
-            flash('University created. After some time you will be able to select the newly added university',category='success')
+            flash('University created.',category='success')
         except:
             flash('Failed to add university. Please try again later',category='danger')
     return redirect(url_for('users.edit_profile'))
@@ -184,7 +196,7 @@ def add_faculty():
     if(facName):
         try:
             add_fac(facName)
-            flash('Faculty created. After some time you will be able to select the newly added faculty',category='success')
+            flash('Faculty created.',category='success')
         except:
             flash('Failed to add faculty. Please try again later',category='danger')
     return redirect(url_for('users.edit_profile'))
@@ -197,7 +209,7 @@ def add_department():
     if(depName):
         try:
             add_dep(depName)
-            flash('Department created. After some time you will be able to select the newly added faculty',category='success')
+            flash('Department created.',category='success')
         except:
             flash('Failed to add department. Please try again later',category='danger')
     return redirect(url_for('users.edit_profile'))

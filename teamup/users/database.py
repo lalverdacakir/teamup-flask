@@ -5,6 +5,7 @@ from datetime import date
 import os
 import secrets
 from PIL import Image
+from teamup.teams.database import get_admin_teams,update_team_data
 from werkzeug.utils import secure_filename
 def get_user(username=None,email=None,userId=None):
 
@@ -35,10 +36,10 @@ def get_user(username=None,email=None,userId=None):
 def get_user_detail(userId):
     sql = '''SELECT user.username, user.email, userdetail.*,university.uniName,department.depName,faculty.facName
             FROM userdetail
-            LEFT JOIN user  ON user.userId = userdetail.userId
-            INNER JOIN university on university.uniId = userdetail.uniId
-            INNER JOIN department on department.depId = userdetail.depId
-            INNER JOIN faculty on faculty.facId = userdetail.facId
+            INNER JOIN user  ON user.userId = userdetail.userId
+            LEFT JOIN university on university.uniId = userdetail.uniId
+            LEFT JOIN department on department.depId = userdetail.depId
+            LEFT JOIN faculty on faculty.facId = userdetail.facId
             WHERE user.userId = %s;'''
     cursor = db.cursor(dictionary=True)
     
@@ -57,8 +58,8 @@ def insert_user(user):
     cursor.execute(sql,values)
     db.commit()
     user.id= cursor.lastrowid
-    sql = 'INSERT INTO userdetail(userId) VALUES(%s)'
-    values = (user.id,)
+    sql = 'INSERT INTO userdetail(userId,linkPhoto,fullName) VALUES(%s,%s,%s)'
+    values = (user.id,'img/profile_img/dummy.jpg',user.username)
     cursor.execute(sql,values)
     db.commit()
     cursor.close()
@@ -121,8 +122,6 @@ def update_profile(user,form):
     
 def delet_profile(userId):
     cursor = db.cursor(dictionary=True)
-    sql = 'DELETE FROM userdetail where userId = %s'
-    cursor.execute(sql,(userId,))
     sql = 'DELETE FROM user where userId = %s'
     cursor.execute(sql,(userId,))
     db.commit()

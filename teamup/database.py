@@ -72,11 +72,11 @@ def get_courses():
     res = cursor.fetchall()
     cursor.close()
     return res
-def add_course(course_dict):
+def add_course(name,code,crn):
     cursor = db.cursor(dictionary=True)
     sql = 'INSERT INTO course(courseName,courseCode,courseCRN) values(%s,%s,%s)'
     
-    values = (course_dict['courseName'],course_dict['courseCode'],course_dict['courseCRN'])
+    values = (name,code,crn)
     cursor.execute(sql,values)
     db.commit()
     cursor.close()

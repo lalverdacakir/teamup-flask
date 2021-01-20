@@ -1,15 +1,7 @@
 {% extends 'base.html' %} {%block head%}
 <link rel="stylesheet" href="{{url_for('static', filename='css/profile.css') }}">
-<link rel="stylesheet" href="{{url_for('static', filename='css/login.css') }}"> {%endblock%} {% block body %} {% include 'includes/navbar.html' %}
-<div style="margin-top: 7rem;"></div>
-{% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category,message in messages %}
-<div class="alert alert-{{ category }} alert-dismissible fade show text-center " role="alert ">
-    <span>{{ message }}</span>
-    <button type="button " class="close " data-dismiss="alert " aria-label="Close ">
-                <span aria-hidden="true ">&times;</span>
-                </button>
-</div>
-{% endfor %} {% endif %} {% endwith %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/profile.css') }}"> {%endblock%} {% block body %} {% include 'includes/navbar.html' %}
+
 <form method="POST" action="{{ parameters.action }}" class="container rounded mt-5 mb-5" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
     <div class="row">
@@ -17,7 +9,7 @@
 
         <div class="col-md-12 ">
             <div class="p-3">
-                <div class="d-flex justify-content-between align-items-center mb-3" ">
+                <div class="d-flex justify-content-between align-items-center mb-3">
                     <h4 class="text-right " style="font-weight: 500; color:#F69D49; ">CREATE TEAM</h4>
 
                 </div>
@@ -30,30 +22,28 @@
 
 
                     </div>
-                    
-                    <div class="col-md-6 ">
-                        <a class="border btn btn_add text-sm-left " style="font-size:0.8rem " data-toggle="modal " data-target="#uni "></i> Add Course&nbsp &nbsp<i class="fa fa-plus " style="color:#a23cdd "></i></a>
-                        <br><span style="font-size:0.7rem " class="text-small "><i class="fa fa-star " style="color:#a23cdd "></i>After edition you need to wait a few seconds in order to see newly added university and refresh</span>
 
+                    <div class="col-md-6 mt-4">
+                        <a class="btn btn_add border text-sm-left " data-toggle="modal" data-target="#dep" style="font-size:0.8rem">Add Course &nbsp &nbsp <i class="fa fa-plus" style="color:#a23cdd;"></i></a>
                     </div>
 
 
                     <div class="col-md-6 ">
                         <div class="row mt-2 ">
-                            
-                                <img style="width: 13rem;border-radius: 50%; " class=" mt-4 mb-3 " src="{{url_for( 'static',filename=parameters.photo)}} ">
-                    
-                                <div class="form-group m-2 " style="vertical-align: middle; ">
-                                    {{ form.linkPhoto.label() }} {{ form.linkPhoto(class="form-control-file ") }} {% if form.linkPhoto.errors %} {% for error in form.linkPhoto.errors %}
-                                    <span class="text-danger ">{{ error }}</span> {% endfor %} {% endif %}
-                                </div>
-                           
+
+                            <img style="width: 13rem;border-radius: 50%; " class=" mt-4 mb-3 " src="{{url_for( 'static',filename=parameters.photo)}} ">
+
+                            <div class="form-group m-2 " style="vertical-align: middle; ">
+                                {{ form.linkPhoto.label() }} {{ form.linkPhoto(class="form-control-file ") }} {% if form.linkPhoto.errors %} {% for error in form.linkPhoto.errors %}
+                                <span class="text-danger ">{{ error }}</span> {% endfor %} {% endif %}
+                            </div>
+
                         </div>
                         <div class="row mt-2 ">
-                            {{form.teamName.label(class = "labels label ")}} {{form.teamName(class="form-control ")}}</div>
+                            {{form.teamName.label(class = "labels label ")}}* {{form.teamName(class="form-control ")}}</div>
                         <div class="row mt-2 ">
 
-                            {{form.openSpots.label(class = "labels label ")}} {{form.openSpots(class="form-control ")}}
+                            {{form.openSpots.label(class = "labels label ")}}* {{form.openSpots(class="form-control ")}}
                             <span style="color: #f00 "> {% if form.openSpots.errors %} {% for error in form.openSpots.errors %}
                                 <span class="text-danger ">{{ error }}</span> {% endfor %}{% endif %}</span>
 
@@ -72,7 +62,7 @@
                         </div>
                     </div>
                     <div class="col-md-6 ">
-                        {{form.description.label(class = "labels label ")}} {{form.description(class="form-control ",style="height:300px ")}}
+                        {{form.description.label(class = "labels label ")}}* {{form.description(class="form-control ",style="height:300px ")}}
                     </div>
 
                 </div>
@@ -90,4 +80,54 @@
 
 </form>
 
+<div id="dep" class="modal fade">
+    <div class="modal-dialog ">
+        <div class="modal-content ">
+            <div class="modal-header ">
+                <h4 class="modal-title text-xs-center ">Add Course</h4>
+            </div>
+            <div class="modal-body ">
+                <form role="form " method="POST" action="{{url_for( 'teams.course_add')}} ">
+                    {{ form.hidden_tag() }}
+                    <input type="hidden" name="_token" value="">
+                    <div class="form-group ">
+                        <label class="control-label">Course Name *</label>
+                        <div>
+                            <input type="text " class="form-control input-lg " name="name" value="">
+                        </div>
+                    </div>
+                    <div class="form-group ">
+                        <label class="control-label ">Course Code *</label>
+                        <div>
+                            <input type="text " class="form-control input-lg " name="code" value="">
+                        </div>
+                    </div>
+                    <div class="form-group ">
+                        <label class="control-label ">Course Course CRN</label>
+                        <div>
+                            <input type="text " class="form-control input-lg " name="crn" value="">
+                        </div>
+                    </div>
+
+
+                    <div class="form-group ">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <a data-dismiss="modal" class="text-uppercase btn btn-outline-danger ">Cancel</a>
+                            </div>
+                            <div class="col-md-6">
+                                <button type="submit" class="text-uppercase btn btn-outline-success ">Save</button>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
 {%endblock%}

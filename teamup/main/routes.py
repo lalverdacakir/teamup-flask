@@ -3,6 +3,7 @@ from teamup import login_manager
 from flask_login import LoginManager,login_user, current_user, logout_user, login_required, UserMixin
 import re
 from flask_mail import Message
+from teamup.teams.database import get_course_team_count,get_total_open_spots,get_accepting_team_count
 from teamup import mail
 main = Blueprint('main', __name__)
 
@@ -10,13 +11,23 @@ main = Blueprint('main', __name__)
 @main.route("/home")
 def home():
     parameters ={
+        "usr":current_user,
+        "course_team": get_course_team_count(),
+        "accepting_team_count": get_accepting_team_count(),
+        "total_open_spots": get_total_open_spots()
+    }
+    return render_template('main_page.html',parameters=parameters)
+
+@main.route("/teams")
+def teams():
+    parameters ={
         "usr":current_user
     }
     if current_user.is_authenticated:
         
         return redirect(url_for('teams.main'))
     else:
-        return render_template('main_page.html',parameters=parameters)
+        return redirect(url_for('main.home'))
 
 
 @main.route("/contact", methods=['GET', 'POST'])

@@ -1,4 +1,4 @@
-<nav class="navbar mynavbar fixed-top navbar-dark navbar-expand-lg  py-0">
+<nav class="navbar mynavbar navbar-dark navbar-expand-lg  py-0">
     <a class="navbar-brand text-black my-brand" href="{{url_for('main.home')}}">
         <img src="{{ url_for('static', filename='img/logo2.png') }}" class=" logo d-inline-block align-center logo" alt=""> Team Up
 
@@ -12,14 +12,15 @@
 
         <ul class="navbar-nav">
 
-            {% if parameters.usr.is_authenticated %}
-            <li class="nav-item ">
-                <a class="nav-link active" href="{{url_for('main.home')}}">Team ads</a>
-            </li>
-            {%else%}
+
             <li class="nav-item ">
                 <a class="nav-link active" href="{{url_for('main.home')}}">Home</a>
             </li>
+            {% if parameters.usr.is_authenticated %}
+            <li class="nav-item ">
+                <a class="nav-link active" href="{{url_for('main.teams')}}">Team ads</a>
+            </li>
+
             {%endif%}
 
             <li class="nav-item ">

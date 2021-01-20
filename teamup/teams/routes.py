@@ -1,10 +1,11 @@
 from flask import render_template, url_for, flash, redirect, request, Blueprint,session
 from flask_login import login_user, current_user, logout_user, login_required
 from teamup import db
-from .forms import CreateTeamForm,ApplicationForm,SearchteamForm
+from .forms import CreateTeamForm,ApplicationForm,SearchteamForm,dict_list_to_tuple_list
 from teamup.users.database import get_user,get_user_detail
 from teamup.teams.database import get_teams,get_total_open_spots,get_accepting_team_count,create_team,delete_team_info,update_team_data,get_team,get_user_apps,get_user_teams,update_user_app,add_user_app,get_team_members,get_team_applications,get_app,add_user_team,accept_user_team,deny_user_team,delete_user_app
 from teamup.teams.utils import filter_by_name,filter_by_isAccepting,filter_by_course
+from teamup.database import get_courses,add_course
 teams = Blueprint('teams',__name__)
 @teams.route('/main',methods=['GET','POST'])
 @login_required
@@ -52,7 +53,10 @@ def view_team(teamId):
         for member in members:
             temp = get_user_detail(member['userId'])
             members_with_details.append(temp)
-        admin = get_user(userId = team['adminUserId'])
+        admin = None
+        if(team['adminUserId']):
+            admin = get_user(userId = team['adminUserId'])
+
         if(admin):
             admin = admin[0]
             admin = get_user_detail(admin['userId'])
@@ -74,6 +78,7 @@ def view_team(teamId):
 @login_required
 def createTeam():
     form = CreateTeamForm()
+    form.course.choices = dict_list_to_tuple_list(get_courses())
     if form.validate_on_submit():
         last_row = create_team(current_user,form)
         return redirect(url_for('teams.view_team',teamId = last_row))
@@ -83,6 +88,26 @@ def createTeam():
         "photo": "img/team_img/dummy.jpeg"
     }
     return render_template('create_team.html',form = form,parameters=parameters)
+
+@teams.route('/course_add',methods = ['POST'])
+@login_required
+def course_add():
+    if(request.method=='GET'):
+        print("sgewge")
+    name = request.form['name']
+    code = request.form['code']
+    crn = request.form['crn']
+    if not(name and code):
+        flash('Incorrectly filled')
+    add_course(name,code,crn)
+    try:
+        add_course(name,code,crn)
+        flash('Added course','success')
+    except:
+        flash('Failed to add course.','danger')
+
+    return redirect(url_for('teams.createTeam'))
+    
 @teams.route('/update_team/<int:teamId>',methods=['GET','POST'])
 @login_required
 def update_team(teamId):
@@ -91,8 +116,10 @@ def update_team(teamId):
         if(team['adminUserId']==current_user.id):
 
             form = CreateTeamForm()
+            form.course.choices = dict_list_to_tuple_list(get_courses())
             if form.validate_on_submit():
                 
+                update_team_data(teamId,form)
                 try:
                     update_team_data(teamId,form)
                     flash('Updated the team information succesfully','success')
@@ -173,7 +200,7 @@ def apply(teamId):
             for every in teams:
                 if(every['teamId']==teamId):
                     flash('You are already a member of this team','success')
-                    return redirect(url_for('teams.view_team',teamId = teamId))
+                    return redirect(url_for('teams.main'))
 
             
             if(form.validate_on_submit()):
@@ -193,7 +220,7 @@ def apply(teamId):
                         flash('Failed to save you application','danger')
                    
                
-                return redirect(url_for('teams.view_team',teamId = teamId))
+                return redirect(url_for('teams.main'))
 
             parameters = {
                 "usr":current_user,
@@ -204,7 +231,7 @@ def apply(teamId):
             flash('isAcc','danger')
             return redirect(url_for('teams.view_team',teamId = teamId))
     else:
-        lash('isAcc','danger')
+        flash('Team not found','danger')
         return redirect(url_for('main.home'))
         
 @teams.route('/accept_application/<int:appId>',methods=['POST'])
@@ -215,18 +242,20 @@ def accept_application(appId):
    
     if(application):
         if current_user.id == application['adminUserId']:
-            
             try:
                 add_user_team(application['teamId'],application['userId'])
-                flash('Added the user to the team','success')
-                try:
-                    accept_user_team(application['teamId'],application['userId'])
-                    flash('Accepted the application','success')
-                except:
-                    flash('Failed to accept application','danger')
+                flash('Added the user to the team','success') 
             except:
                 flash('Failed to add user to team','danger')
-            return redirect(url_for('teams.view_team',teamId = application['teamId']))
+                return redirect(url_for('teams.view_team',teamId = application['teamId'])) 
+            try:
+                accept_user_team(application['teamId'],application['userId'])
+                flash('Accepted the application','success')
+                return redirect(url_for('teams.view_team',teamId = application['teamId']))
+            except:
+                flash('Failed to accept application','danger')
+                return redirect(url_for('teams.view_team',teamId = application['teamId']))
+            
         else:
             flash('Permission denied','danger')
             return redirect(url_for('teams.view_team',teamId = application['teamId']))

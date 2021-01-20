@@ -5,12 +5,32 @@ import os
 import secrets
 from PIL import Image
 from werkzeug.utils import secure_filename
+def save_picture(form_picture):
+    random_hex = secrets.token_hex(8)
+    filename = secure_filename(form_picture.filename)
+    _, f_ext = os.path.splitext(filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(app.root_path, 'static/img/team_img', picture_fn)
+    
+    output_size = (125, 125)
+    i = Image.open(form_picture)
+    i.thumbnail(output_size)
+    i.save(picture_path)
+
+    return picture_fn
 
 def create_team(user,form):
     
     cursor = db.cursor(dictionary=True)
-    sql = 'INSERT INTO team(adminUserId,teamName,courseId,description,openSpots,createDate,isAccepting) values(%s,%s,%s,%s,%s,%s,%s)'
-    values = (user.id,form.teamName.data,form.course.data,form.description.data,form.openSpots.data,date.today(),form.isAccepting.data)
+    sql = 'INSERT INTO team(adminUserId,teamName,courseId,description,openSpots,createDate,isAccepting,linkPhoto) values(%s,%s,%s,%s,%s,%s,%s,%s)'
+    path = ''
+    if(form.linkPhoto.data):
+        path = 'img/team_img/' + save_picture(form.linkPhoto.data)
+    else:
+        path = 'img/team_img/dummy.jpeg'
+        
+    
+    values = (user.id,form.teamName.data,form.course.data,form.description.data,form.openSpots.data,date.today(),form.isAccepting.data,path)
     cursor.execute(sql,values)
     db.commit()
     res = cursor.lastrowid
@@ -20,8 +40,8 @@ def create_team(user,form):
 def get_team(teamId):
     cursor = db.cursor(dictionary=True)
     sql = '''SELECT team.*,course.*,user.username FROM team 
-        INNER JOIN user ON user.userId = team.adminUserId
-        INNER JOIN course on course.courseId = team.courseId
+        LEFT JOIN user ON user.userId = team.adminUserId
+        LEFT JOIN course on course.courseId = team.courseId
         WHERE team.teamId = %s
     '''
     cursor.execute(sql,(teamId,))
@@ -66,14 +86,13 @@ def update_user_app(user,teamId,form):
     return
 
 def change_status_app(appliedUserId,teamId):
-    pass
     cursor= db.cursor(dictionary=True)
 
-    user_apps = get_user_apps(user.id)
+    user_apps = get_user_apps(appliedUserId)
     for every in user_apps:
         if(teamId==every['teamId']):
             sql = 'UPDATE application set content = %s, modified = %s where teamId = %s and userId = %s'
-            cursor.execute(sql,(form['content'],date.today(), teamId,user.id))
+            cursor.execute(sql,(every['content'],date.today(), teamId,appliedUserId))
             db.commit()
             cursor.close()
             return
@@ -92,8 +111,8 @@ def get_user_teams(userId):
     sql = '''SELECT team.*,course.* FROM teamlist 
         INNER JOIN user ON user.userId = teamlist.userId
         INNER JOIN  team on team.teamId = teamlist.teamId
-        INNER JOIN course on course.courseId = team.courseId
-        WHERE user.userId = %s
+        LEFT JOIN course on course.courseId = team.courseId
+        WHERE user.userId = %s ORDER BY isAccepting desc
     '''
     values = (userId,)
     cursor.execute(sql,values)
@@ -101,24 +120,23 @@ def get_user_teams(userId):
 def get_admin_teams(userId):
     cursor = db.cursor(dictionary=True)
     sql = '''SELECT team.*,course.* FROM team 
-        INNER JOIN course on course.courseId = team.courseId
-        WHERE team.adminUserId = %s
+        LEFT JOIN course on course.courseId = team.courseId
+        WHERE team.adminUserId = %s ORDER BY isAccepting desc
     '''
     values = (userId,)
     cursor.execute(sql,values)
     return cursor.fetchall()
-def update_user_team_status(user,teamId):
-    cursor= db.cursor(dictionary=True)
-    user_teams = get_user_teams(user)
-    for every in user_teams:
-        if(teamId==every['teamId']):
-            sql = 'UPDATE teamlist set status = "Former", endDate = %s where teamId = %s and userId = %s'
-            cursor.execute(sql,(date.today(), teamId,user.id))
-            db.commit()
-            cursor.close()
-            return
+
+def set_is_accepting(teamId,value):
+    cursor = db.cursor(dictionary=True)
+ 
+    sql = 'UPDATE team SET isAccepting = %s WHERE teamId = %s'
+   
+    values = (value,teamId)
+    cursor.execute(sql,values)
+    db.commit()
     cursor.close()
-    return
+    
 
 def delete_team_info(teamId):
     cursor= db.cursor(dictionary=True)
@@ -147,6 +165,10 @@ def change_open_spots(number,teamId):
         spots += number
         sql='UPDATE team SET openSpots = %s WHERE teamId = %s'
         cursor.execute(sql,(spots,teamId))
+        if(spots<=0):
+            set_is_accepting(teamId,False)
+            
+        
         db.commit()
     cursor.close()
     
@@ -208,16 +230,21 @@ def get_app(appId):
     cursor.close()
     return res
 
+
 def update_team_data(teamId,form):
     cursor = db.cursor(dictionary=True)
-   
+    team = get_team(teamId = teamId)
     sql = '''UPDATE team 
-            SET teamName = %s, courseId = %s, description = %s, openSpots = %s, isAccepting = %s
+            SET teamName = %s, courseId = %s, description = %s, openSpots = %s, isAccepting = %s, linkPhoto = %s
             WHERE teamId = %s'''
-    print('update team data fun')
-    print(sql, '  ',(form.teamName.data,form.course.data,form.description.data,form.openSpots.data,form.isAccepting.data,teamId))
+    path = ''
+    if(form.linkPhoto.data):
+        path = 'img/team_img/' + save_picture(form.linkPhoto.data)
+    else:
+        path = team['linkPhoto']
+        
     
-    values = (form.teamName.data,form.course.data,form.description.data,form.openSpots.data,form.isAccepting.data,teamId)
+    values = (form.teamName.data,form.course.data,form.description.data,form.openSpots.data,form.isAccepting.data,path,teamId)
    
     cursor.execute(sql,values)
     db.commit()
@@ -233,7 +260,17 @@ def get_accepting_team_count():
             return each['count']
     cursor.close()
     return 0
-
+def get_course_team_count():
+    cursor = db.cursor(dictionary = True)
+    sql = '''
+            SELECT course.courseName, count(team.courseId) as c FROM team
+            INNER JOIN course ON course.courseId = team.courseId
+            GROUP BY team.courseId
+    '''
+    cursor.execute(sql)
+    res = cursor.fetchall()
+    cursor.close()
+    return res
 def get_total_open_spots():
     cursor = db.cursor(dictionary=True)
     sql='''select sum(openSpots) as sum from team where team.isAccepting = 1'''   
@@ -247,7 +284,7 @@ def get_total_open_spots():
 def get_teams():
     cursor = db.cursor(dictionary = True)
     sql = '''SELECT team.*,course.* FROM team 
-            INNER JOIN course on course.courseId = team.courseId
+            LEFT JOIN course on course.courseId = team.courseId ORDER BY isAccepting desc, openSpots desc
             '''
     cursor.execute(sql)
     res = cursor.fetchall()

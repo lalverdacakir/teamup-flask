@@ -1,15 +1,8 @@
 {% extends 'base.html' %} {%block head%}
 <link rel="stylesheet" href="{{url_for('static', filename='css/profile.css') }}">
 <link rel="stylesheet" href="{{url_for('static', filename='css/login.css') }}"> {%endblock%} {% block body %} {% include 'includes/navbar.html' %}
-<div style="margin-top: 7rem;"></div>
-{% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category,message in messages %}
-<div class="alert alert-{{ category }} alert-dismissible fade show text-center " role="alert ">
-    <span>{{ message }}</span>
-    <button type="button " class="close " data-dismiss="alert " aria-label="Close ">
-                <span aria-hidden="true ">&times;</span>
-                </button>
-</div>
-{% endfor %} {% endif %} {% endwith %}
+
+
 <form method="POST" action="{{ url_for('teams.apply',teamId = parameters.team.teamId) }}" class="container rounded mt-5 mb-5" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
     <div class="row">

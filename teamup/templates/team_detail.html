@@ -1,17 +1,6 @@
 {% extends 'base.html' %} {%block head%}
-<link rel="stylesheet" href="{{url_for('static', filename='css/profile.css') }}">
-<link rel="stylesheet" href="{{url_for('static', filename='css/login.css') }}"> {%endblock%} {% block body %} {% include 'includes/navbar.html' %}
-<div style="margin-top: 7rem;"></div>
+<link rel="stylesheet" href="{{url_for('static', filename='css/profile.css') }}"> {%endblock%} {% block body %} {% include 'includes/navbar.html' %}
 
-
-{% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category,message in messages %}
-<div class="alert alert-{{ category }} alert-dismissible fade show text-center " role="alert ">
-    <span>{{ message }}</span>
-    <button type="button " class="close " data-dismiss="alert " aria-label="Close ">
-                <span aria-hidden="true ">&times;</span>
-                </button>
-</div>
-{% endfor %} {% endif %} {% endwith %}
 <div class="container rounded mt-5 mb-5">
 
     <div class="row">
@@ -23,7 +12,7 @@
                 <div class="row d-flex justify-content-between align-items-center mb-3">
                     <h4 class="text-right" style="font-weight: 500;">TEAM DETAIL</h4>
                     {%if parameters.team.isAccepting and parameters.team.adminUserId!=parameters.usr.id%}
-                    <a href="{{url_for('teams.apply',teamId=parameters.team.teamId)}}" class="btn register-btn">
+                    <a href="{{url_for('teams.apply',teamId=parameters.team.teamId)}}" class="btn btn-outline-warning orange text-uppercase">
                         <h5>Apply or Edit Application</h5>
                     </a> {%endif%}
                 </div>
@@ -92,7 +81,6 @@
 </div>
 
 </div>
-
 {%if parameters.admin or parameters.members%}
 <div class="container rounded p-3">
     <h5>Members:</h5>
@@ -120,7 +108,7 @@
                 <img class="thumb" src="{{url_for('static',filename=appl.linkPhoto)}}" style="width:5rem" alt="">
                 <p>{{appl.fullName}}</p>
             </a>
-            {%if appl.status == 'Denied'%}
+            {%if parameters.team.isAccepting%} {%if appl.status == 'Denied'%}
 
             <button class="status_denied">
                 {{appl.status}}
@@ -128,7 +116,7 @@
 
             <button class="status_accepted">
                 {{appl.status}}
-            </button> {%endif%}
+            </button> {%endif%}{%endif%}
         </div>
 
         <div class="col-md-8">
@@ -173,11 +161,11 @@
 
             <form method="POST" action="{{url_for('teams.accept_application',appId=appl.applicationId)}}">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-                <button onselect="" class="btn_accept  mt-2">Accept</button>
+                <button onselect="" class="btn-outline-success btn  mt-2">Accept</button>
             </form>
             <form method="POST" action="{{url_for('teams.deny_application',appId=appl.applicationId)}}">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-                <button class="btn_deny mt-2">Deny</button>
+                <button class="btn btn-outline-danger mt-2">Deny</button>
             </form>
             {%endif%}
         </div>
@@ -194,7 +182,7 @@
         <div class="col-md-6">
             <form method="POST" action="{{url_for('teams.update_team',teamId=parameters.team.teamId)}}">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-                <button onselect="" class="btn_accept  mt-2">Update Team Information</button>
+                <button onselect="" class="btn btn-outline-warning  mt-2">Update Team Information</button>
             </form>
 
 
@@ -202,7 +190,7 @@
         <div class="col-md-6">
             <form method="POST" action="{{url_for('teams.delete_team',teamId=parameters.team.teamId)}}">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-                <button onselect="" class="btn_deny  mt-2">Delete Team</button>
+                <button onselect="" class="btn btn-outline-danger  mt-2">Delete Team</button>
             </form>
 
 

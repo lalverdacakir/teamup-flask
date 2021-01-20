@@ -67,8 +67,42 @@
     margin-bottom: 0px;
 }
 
+.orange {
+    border-color: #fa881d;
+    color: #fa881d
+}
+
+.orange:hover {
+    color: white;
+    background-color: #fa881d;
+    border-color: #fa881d;
+}
+
+form .btn_add {
+    width: initial;
+}
+
+.btn_add:hover {
+    transition: .3s;
+    background-color: #d6cfcf;
+}
+
+.btn {
+    border-width: 3px;
+    font-weight: 600;
+}
+
+form .submit-btn {
+    width: initial;
+    background-color: #F69D49;
+}
+
 .border-k {
     border: 1px solid #6a41c9;
+}
+
+form .btn {
+    width: 100%;
 }
 
 .thumb {

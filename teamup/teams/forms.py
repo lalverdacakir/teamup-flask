@@ -4,7 +4,7 @@ from flask_wtf.file import FileField, FileAllowed
 
 from flask_login import current_user
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, TextAreaField,IntegerField,FloatField,SelectMultipleField,RadioField,DateField,widgets, SelectMultipleField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError,Optional
 from teamup.database import get_courses,get_deps, get_facs, get_unis,get_users
 from wtforms.widgets.html5 import DateTimeInput
 
@@ -44,22 +44,19 @@ def util(_dict):
 
 class CreateTeamForm(FlaskForm):
     course_choice = dict_list_to_tuple_list(get_courses())
-    teamName = StringField()
-    description = TextAreaField('Description')
-    openSpots = IntegerField('Open Spots')
-    isAccepting = BooleanField('Accepting')
+    teamName = StringField('Team Name',validators = [DataRequired()])
+    description = TextAreaField('Description',validators = [DataRequired()])
+    openSpots = IntegerField('Open Spots',validators = [DataRequired()])
+    isAccepting = BooleanField('Accepting',validators = [Optional()],default = 1)
     course = SelectField(label = 'Course',coerce=int, choices =course_choice)
-    linkPhoto = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'], 'Images only')])
+    linkPhoto = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png','jfif','jpeg'], 'Images only')])
     submit = SubmitField('SUBMIT')
 
 class ApplicationForm(FlaskForm):
     content = TextAreaField('Motivation Letter',validators=[DataRequired()])
     submit = SubmitField('SEND')
 
-class AddMemberForm(FlaskForm):
-    users_choice = util(get_users())
-    choice = SelectField(label = 'Course',coerce=int, choices =users_choice)
-    submit = SubmitField('SUBMIT')
+
 class MultiCheckboxField(SelectMultipleField):
     widget = widgets.ListWidget(prefix_label=False)
     option_widget = widgets.CheckboxInput()

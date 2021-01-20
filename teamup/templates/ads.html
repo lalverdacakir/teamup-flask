@@ -1,21 +1,17 @@
 {% extends 'base.html' %} {%block head%}
 <link rel="stylesheet" href="{{url_for('static', filename='css/cor.css') }}">
-<link rel="stylesheet" href="{{url_for('static', filename='css/login.css') }}">
 <link rel="stylesheet" href="{{url_for('static', filename='css/profile.css') }}"> {%endblock%} {% block body %} {% include 'includes/navbar.html' %}
 
-<div style="margin-top: 7rem;"></div>
-{% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category,message in messages %}
-<div class="alert alert-{{ category }} alert-dismissible fade show text-center " role="alert ">
-    <span>{{ message }}</span>
-    <button type="button " class="close " data-dismiss="alert " aria-label="Close ">
-                <span aria-hidden="true ">&times;</span>
-                </button>
-</div>
-{% endfor %} {% endif %} {% endwith %}
+
 <div class="container" style="background-color: white;">
-    <div class="row m-3">
-        <div class="col-md-12 text-center">
-            There is {{parameters.accepting}} teams and {{parameters.open_spots}} open spots open for application
+
+    <div class="row my-3">
+
+        <div class="col-md-3">
+        </div>
+        <div class="row-md-8">
+            <a href="{{url_for('teams.createTeam')}}" class="btn btn-outline-warning orange text-uppercase">open team</a>
+
         </div>
     </div>
     <div class="row">
@@ -59,7 +55,8 @@
                         <!-- Section: Size -->
                         <section class="mb-4 ">
                             <h6 class="font-weight-bold mb-3">Team Name Search</h6>
-                            <label class="form-check-label small text-uppercase card-link-secondary"> {{form.name(class="form-control")}}</label>
+                            <label class="form-check-label small text-uppercase card-link-secondary">
+                                {{form.name(class="form-control")}}</label>
 
                         </section>
 
@@ -87,7 +84,7 @@
                             <div class="row rounded mt-2 border-k">
                                 <span class="label-detail sorround">Spots</span>
                                 <p class="sorround info">
-                                    {%if team.isAccepting %} {{team.openSpots}} {%else%}} Closed for application {%endif%}
+                                    {%if team.isAccepting %} {{team.openSpots}} {%else%} Closed for application {%endif%}
                                 </p>
 
                             </div>
@@ -131,14 +128,17 @@
                             </div>
                             <div class="row text-right mx-1">
                                 <div class="col-md-5">
-                                    <a class="btn btn_add mt-2 " href="{{url_for('teams.view_team',teamId = team.teamId)}}">See detail&nbsp; <i style="vertical-align: middle;font-size:2rem" class="fa fa-angle-right"></i>
+                                    <a class="btn btn_add mt-2 " href="{{url_for('teams.view_team',teamId = team.teamId)}}">See detail&nbsp; <i
+                                            style="vertical-align: middle;font-size:2rem" class="fa fa-angle-right"></i></a>
 
                                 </div>
-                            <div class="col-md-3"></div>
-                               <div class="col-md-4">
-                                   <a href="{{url_for('teams.apply',teamId=team.teamId)}}" class="btn register-btn">
-                                    APPLY
-                                </a>
+                                <div class="col-md-3"></div>
+                                <div class="col-md-4 mt-2">
+                                    {%if team.isAccepting %} {%if team.adminUserId != parameters.usr.id%}
+                                    <a href="{{url_for('teams.apply',teamId=team.teamId)}}" class="btn btn-outline-warning orange text-uppercase">
+                                        APPLY
+                                    </a> {%endif%}{%else%}
+                                    <span class="btn btn-danger disabled text-uppercase">Closed</span>{%endif%}
                                 </div>
 
                             </div>

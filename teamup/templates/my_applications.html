@@ -1,17 +1,7 @@
 {% extends 'base.html' %} {%block head%}
 <link rel="stylesheet" href="{{url_for('static', filename='css/profile.css') }}">
 <link rel="stylesheet" href="{{url_for('static', filename='css/login.css') }}"> {%endblock%} {% block body %} {% include 'includes/navbar.html' %}
-<div style="margin-top: 7rem;"></div>
 
-
-{% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category,message in messages %}
-<div class="alert alert-{{ category }} alert-dismissible fade show text-center " role="alert ">
-    <span>{{ message }}</span>
-    <button type="button " class="close " data-dismiss="alert " aria-label="Close ">
-                <span aria-hidden="true ">&times;</span>
-                </button>
-</div>
-{% endfor %} {% endif %} {% endwith %}
 <div class="container rounded text-center py-2">
     <h4 style="font-weight: 500;">MY APPLICATIONS</h4>
 </div>
@@ -97,11 +87,11 @@
         <div class="col-md-2">{%if appl.status == 'In Process'%}
             <form method="POST" action="{{url_for('teams.apply',teamId=appl.teamId)}}">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-                <button onselect="" class="btn_accept  mt-2">Update Application</button>
+                <button onselect="" class="btn-outline-primary  mt-2">Update Application</button>
             </form>
             <form method="POST" action="{{url_for('teams.delete_application',appId=appl.applicationId)}}">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-                <button class="btn_deny mt-2">Delete Application</button>
+                <button class="btn-outline-danger mt-2">Delete Application</button>
             </form>
             {%endif%}
             <a class="btn btn_add mt-2 " href="{{url_for('teams.view_team',teamId = appl.teamId)}}">View Team&nbsp; <i style="vertical-align: middle;font-size:2rem" class="fa fa-angle-right"></i>
