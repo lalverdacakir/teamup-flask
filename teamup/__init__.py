@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask,render_template
 from flask_login import LoginManager
 from .config import Config
 import mysql.connector
@@ -33,7 +33,13 @@ def create_app(config_class = Config):
     from teamup.users.routes import users
     from teamup.main.routes import main
     from teamup.teams.routes import teams
+
+
+
     app.register_blueprint(users)
     app.register_blueprint(main)
     app.register_blueprint(teams)
+    @app.errorhandler(404)
+    def resource_not_found(e):
+        return render_template('404.html')
     return app

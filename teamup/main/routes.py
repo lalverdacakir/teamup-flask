@@ -7,6 +7,7 @@ from teamup.teams.database import get_course_team_count,get_total_open_spots,get
 from teamup import mail
 main = Blueprint('main', __name__)
 
+
 @main.route("/")
 @main.route("/home")
 def home():
